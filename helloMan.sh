@@ -59,3 +59,52 @@ check_firewall() {
         iptables -L -n | grep 'Chain'
     fi
 }
+
+gen_rpt() {
+    F_NAME="HELLO_$(date +%Y%m%d_%H%M).txt"
+    
+    {
+        echo "╔══════════════════════════════╗"
+        echo "║   ${T_NME} SYSTEM REPORT v${T_VER}   ║"
+        echo "║   Author: ${AUTH}   ║"
+        echo "╚══════════════════════════════╝"
+        
+        echo -e "\n[SYSTEM]"
+        echo "OS: $(grep PRETTY_NAME /etc/os-release 2>/dev/null | cut -d'"' -f2)"
+        echo "Kernel: $(uname -r)"
+        
+        echo -e "\n[SOFTWARE]"
+        if type apt &>/dev/null; then
+            dpkg --get-selections | grep -v deinstall | head -n25
+        elif type rpm &>/dev/null; then
+            rpm -qa | head -n25
+        else
+            echo "No package manager detected"
+        fi
+        
+        echo -e "\n[SERVICES]"
+        systemctl list-units --type=service --state=running 2>/dev/null | head -n10
+        
+        $SHOW_OFFLINE && {
+            echo -e "\n[STOPPED SERVICES]"
+            systemctl list-units --type=service --state=inactive 2>/dev/null | head -n5
+        }
+        
+        echo -e "\n[NETWORK]"
+        ip a 2>/dev/null | grep 'inet ' | awk '{print $2}' | grep -v '127.0.0.1'
+        
+        $NET_SCAN && scan_network
+        
+        echo -e "\n[STORAGE]"
+        df -h | grep -v 'tmpfs\|loop'
+        
+        check_firewall
+        
+        echo -e "\n[SUMMARY]"
+        echo "Uptime: $(uptime -p)"
+        echo "Load: $(cat /proc/loadavg | cut -d' ' -f1-3)"
+        echo "Memory: $(free -h | awk '/Mem/{print $3 \"/\" $2}')"
+        
+        echo -e "\n[END] Generated at: $(date '+%Y-%m-%d %H:%M:%S')"
+    } > "${F_NAME}" 2>/dev/null
+}
