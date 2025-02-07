@@ -108,3 +108,9 @@ gen_rpt() {
         echo -e "\n[END] Generated at: $(date '+%Y-%m-%d %H:%M:%S')"
     } > "${F_NAME}" 2>/dev/null
 }
+show_anim
+get_input
+gen_rpt
+
+echo -e "\n\033[1;32m[✓] Audit saved: ${F_NAME}\033[0m"
+exit 0
