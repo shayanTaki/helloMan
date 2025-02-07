@@ -3,30 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>HELLO-MAN SYSTEM AUDITOR - README</title>
-  <style>
-    body {
-      font-family: Tahoma, Arial, sans-serif;
-      text-align: right;
-      direction: rtl;
-      margin: 20px;
-      line-height: 1.6;
-    }
-    pre {
-      background: #f4f4f4;
-      padding: 10px;
-      border: 1px solid #ccc;
-      white-space: pre-wrap;
-    }
-    h1, h2, h3 {
-      margin-top: 20px;
-    }
-    ul, ol {
-      margin-right: 20px;
-    }
-    hr {
-      margin: 20px 0;
-    }
-  </style>
 </head>
 <body>
 
