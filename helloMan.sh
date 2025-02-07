@@ -31,3 +31,19 @@ get_input() {
     read -p "Include stopped services? (y/n): " svc_choice
     [[ $svc_choice == [Yy]* ]] && SHOW_OFFLINE=true
 }
+
+scan_network() {
+    echo -e "\n[NETWORK SCAN]"
+    gateway=$(ip route | awk '/default/ {print $3}')
+    echo "Gateway: $gateway"
+    
+    if command -v nmap &> /dev/null; then
+        echo "Quick port scan:"
+        nmap -T4 -F $gateway/24 | tail -n+5 | head -n-2
+    else
+        echo "Active hosts:"
+        for ip in {1..254}; do
+            ping -c1 -W1 $gateway.$ip | grep 'bytes from' | cut -d' ' -f4 &
+        done | sort -V
+    fi
+}
