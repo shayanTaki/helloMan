@@ -23,3 +23,11 @@ show_anim() {
         echo
     done
 }
+
+get_input() {
+    read -p "Perform network scan? (y/n): " net_choice
+    [[ $net_choice == [Yy]* ]] && NET_SCAN=true
+    
+    read -p "Include stopped services? (y/n): " svc_choice
+    [[ $svc_choice == [Yy]* ]] && SHOW_OFFLINE=true
+}
