@@ -47,3 +47,15 @@ scan_network() {
         done | sort -V
     fi
 }
+
+check_firewall() {
+    echo -e "\n[FIREWALL STATUS]"
+    if command -v ufw &> /dev/null; then
+        ufw status verbose | grep -v '^ '
+    elif command -v firewall-cmd &> /dev/null; then
+        firewall-cmd --state
+        firewall-cmd --list-all
+    else
+        iptables -L -n | grep 'Chain'
+    fi
+}
